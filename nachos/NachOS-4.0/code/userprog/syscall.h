@@ -36,6 +36,12 @@
 #define SC_ThreadJoin   15
 
 #define SC_Add		42
+#define SC_Print	50
+#define SC_PrintF	51
+#define SC_OSAdd	52
+#define SC_OSSub	53
+#define SC_OSDiv	54
+#define SC_OSMul	55
 
 #ifndef IN_ASM
 
@@ -58,6 +64,13 @@ void Halt();
  */ 
 
 int Add(int op1, int op2);
+
+int OSAdd(int op1, int op2);
+int OSSub(int op1, int op2);
+int OSDiv(int op1, int op2);
+int OSMul(int op1, int op2);
+int Print(char* input, int length);
+int PrintF(char* input, ...);
 
 /* Address space control operations: Exit, Exec, Execv, and Join */
 
@@ -105,8 +118,8 @@ typedef int OpenFileId;
  * the console device.
  */
 
-#define ConsoleInput	0  
-#define ConsoleOutput	1  
+#define CONSOLEINPUT	0  
+#define CONSOLEOUTPUT	1  
  
 /* Create a Nachos file, with name "name" */
 /* Note: Create does not open the file.   */

@@ -58,6 +58,54 @@ Add:
 	j 	$31
 	.end Add
 
+	.global OSAdd
+	.ent	 OSAdd
+OSAdd:
+	addiu $2,$0,SC_OSAdd
+	syscall
+	j	$31
+	.end OSAdd
+
+	.global OSSub
+	.ent	 OSSub
+OSSub:
+	addiu $2,$0,SC_OSSub
+	syscall
+	j	$31
+	.end OSSub
+
+	.global OSDiv
+	.ent	 OSDiv
+OSDiv:
+	addiu $2,$0,SC_OSDiv
+	syscall
+	j	$31
+	.end OSDiv
+
+	.global OSMul
+	.ent	 OSMul
+OSMul:
+	addiu $2,$0,SC_OSMul
+	syscall
+	j	$31
+	.end OSMul
+
+	.global Print
+	.ent	 Print
+Print:
+	addiu $2,$0,SC_Print
+	syscall
+	j	$31
+	.end Print
+
+	.global PrintF
+	.ent	 PrintF
+PrintF:
+	addiu $2,$0,SC_PrintF
+	syscall
+	j	$31
+	.end PrintF
+
 	.globl Exit
 	.ent	Exit
 Exit:
