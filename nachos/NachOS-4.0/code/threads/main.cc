@@ -172,6 +172,7 @@ main(int argc, char **argv)
     bool threadTestFlag = false;
     bool consoleTestFlag = false;
     bool networkTestFlag = false;
+    bool threadRunFlag = false;
 #ifndef FILESYS_STUB
     char *copyUnixFileName = NULL;    // UNIX file to be copied into Nachos
     char *copyNachosFileName = NULL;  // name of copied file in Nachos
@@ -200,6 +201,9 @@ main(int argc, char **argv)
 	}
 	else if (strcmp(argv[i], "-K") == 0) {
 	    threadTestFlag = TRUE;
+	}
+	else if (strcmp(argv[i], "-S") == 0) {
+	    threadRunFlag = TRUE;
 	}
 	else if (strcmp(argv[i], "-C") == 0) {
 	    consoleTestFlag = TRUE;
@@ -263,6 +267,10 @@ main(int argc, char **argv)
     }
     if (networkTestFlag) {
       kernel->NetworkTest();   // two-machine test of the network
+    }
+    if (threadRunFlag) {       // run RR scheduling
+      ASSERT(argv[2] != NULL);
+      kernel->currentThread->MyScheduling(argv[2]);
     }
 
 #ifndef FILESYS_STUB

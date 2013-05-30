@@ -80,6 +80,8 @@ class Thread {
     // THEY MUST be in this position for SWITCH to work.
     int *stackTop;			 // the current stack pointer
     void *machineState[MachineStateSize];  // all registers except for stackTop
+    int priority;                        // priority of each thread
+    int remainingExecutionTicks;         // remaing tick for execution
 
   public:
     Thread(char* debugName);		// initialize a Thread 
@@ -104,6 +106,11 @@ class Thread {
     char* getName() { return (name); }
     void Print() { cout << name; }
     void SelfTest();		// test whether thread impl is working
+    void setPriority(int p) { priority = p; }
+    int  getPriority() { return priority; }
+    void setRemainingExecutionTicks(int r) { remainingExecutionTicks = r; }
+    int  getRemainingExecutionTicks() { return remainingExecutionTicks; }
+    void MyScheduling(char* ParameterFile); // parse the input file to get threads
 
   private:
     // some of the private data for this class is listed above

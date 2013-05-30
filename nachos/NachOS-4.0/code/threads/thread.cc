@@ -22,6 +22,10 @@
 #include "synch.h"
 #include "sysdep.h"
 
+#include <cstdlib>
+#include <istream>
+#include <fstream>
+
 // this is put at the top of the execution stack, for detecting stack overflows
 const int STACK_FENCEPOST = 0xdedbeef;
 
@@ -434,3 +438,75 @@ Thread::SelfTest()
     SimpleThread(0);
 }
 
+//----------------------------------------------------------------------
+// ProjThread
+//----------------------------------------------------------------------
+
+static void
+ProjThread(int value)
+{
+	int remainTicks = kernel->currentThread->getRemainingExecutionTicks();
+	while (remainTicks>0){
+		printf("%s %d\n", kernel->currentThread->getName(), remainTicks);
+		kernel->currentThread->setRemainingExecutionTicks(remainTicks-1);
+		//kernel->interrupt->OneTick();
+		kernel->currentThread->Yield();
+    }
+}
+
+//----------------------------------------------------------------------
+// Thread::MyScheduling
+//      Parse the input file, and run associated threads
+//      the formation of file is
+//
+//         Time Slice
+//         Num of Thread
+//         name priority remaining-exe-ticks 
+//         name priority remaining-exe-ticks ...
+//----------------------------------------------------------------------
+
+void
+Thread::MyScheduling(char* ParameterFile)
+{
+    ifstream inFile(ParameterFile);
+
+    ASSERT(inFile.is_open());
+   
+    // read File and save thread info
+    char line[128]; 
+    int timeslice;
+    int numOfThread;
+    inFile.getline(line, 128);
+    timeslice = atoi(line);
+    inFile.getline(line, 128);
+    numOfThread = atoi(line);
+
+    char* ThreadName[numOfThread];
+    int   ThreadPriority[numOfThread];
+    int   ThreadRemainingExecutionTicks[numOfThread];
+
+    for(int i=0; i<numOfThread; i++){
+	inFile.getline(line, 128);
+	char* str;
+        str = strtok(line, " ");
+        ThreadName[i] = new char[strlen(str)];
+		memcpy(ThreadName[i], str, strlen(str));
+        str = strtok(NULL, " ");
+        ThreadPriority[i] = atoi(str);
+        str = strtok(NULL, " ");
+        ThreadRemainingExecutionTicks[i] = atoi(str);
+        DEBUG(dbgThread, "Thread[" << ThreadName[i] << "] " 
+                                   << ThreadPriority[i] << " " 
+                                   << ThreadRemainingExecutionTicks[i]);
+    }
+    inFile.close();
+
+	Thread* t;
+	for (int i=0; i<numOfThread; i++){
+		t = new Thread(ThreadName[i]);
+		t->setPriority(ThreadPriority[i]);
+		t->setRemainingExecutionTicks(ThreadRemainingExecutionTicks[i]);
+		t->Fork((VoidFunctionPtr)ProjThread, (void*)i);
+	}
+	kernel->currentThread->Yield();
+}
