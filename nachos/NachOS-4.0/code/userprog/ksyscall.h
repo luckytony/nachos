@@ -110,5 +110,40 @@ int myPrintF(char* input, ...)
 
 
 
+int myKernelPrintF(char* input, ...)
+{
+   va_list list;
+   va_start(list, input);
+   int value = 0;
+   char* addr = input;
+
+   while(true){
+      value = (char) *addr++;
+      if (value == '\0')
+	 break;
+      if ((char)value == '%'){
+         int format = 0;
+         format = (char) *addr++;
+	 if (format != 'd'){
+	    kernel->synchConsoleOut->PutChar((char)value);
+	    kernel->synchConsoleOut->PutChar((char)format);
+	 }
+	 else{
+            format = va_arg(list, int);
+	    if (format < 0){
+	       kernel->synchConsoleOut->PutChar('-');
+	       format = 0 - format;
+	    }
+	    myPrintUInt(format);
+	 }
+      }
+      else
+	 kernel->synchConsoleOut->PutChar((char)value);
+   }
+
+   va_end(list);
+   return 1;
+
+}
 
 #endif /* ! __USERPROG_KSYSCALL_H__ */

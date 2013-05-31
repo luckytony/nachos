@@ -117,7 +117,7 @@ ExceptionHandler(ExceptionType which)
 	  kernel->machine->WriteRegister(NextPCReg, kernel->machine->ReadRegister(PCReg)+4);
 	}
 
-	//myPrintF("The return value of OSAdd(%d, %d) is %d", op1, op2, (int)result);
+	myKernelPrintF("The return value of OSAdd(%d, %d) is %d\n", op1, op2, (int)result);
 
 	return;
 
@@ -133,7 +133,7 @@ ExceptionHandler(ExceptionType which)
 	
 	result = mySub(op1, op2);
 
-	//myPrintF("The return value of OSSub(%d, %d) is %d", op1, op2, (int)result);
+	myKernelPrintF("The return value of OSSub(%d, %d) is %d\n", op1, op2, (int)result);
 	
 	DEBUG(dbgSys, "Sub returning with " << result << "\n");
 
@@ -159,7 +159,7 @@ ExceptionHandler(ExceptionType which)
 	
 	result = myDiv(op1, op2);
 
-	//myPrintF("The return value of OSDiv(%d, %d) is %d", op1, op2, (int)result);
+	myKernelPrintF("The return value of OSDiv(%d, %d) is %d\n", op1, op2, (int)result);
 
 	DEBUG(dbgSys, "Div returning with " << result << "\n");
 
@@ -185,7 +185,7 @@ ExceptionHandler(ExceptionType which)
 	
 	result = myMul(op1, op2);
 
-	//myPrintF("The return value of OSMul(%d, %d) is %d", op1, op2, (int)result);
+	myKernelPrintF("The return value of OSMul(%d, %d) is %d\n", op1, op2, (int)result);
 	
 	DEBUG(dbgSys, "Mul returning with " << result << "\n");
 
