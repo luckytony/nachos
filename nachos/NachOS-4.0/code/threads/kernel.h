@@ -49,7 +49,7 @@ class Kernel {
     Interrupt *interrupt;	// interrupt status
     Statistics *stats;		// performance metrics
     Alarm *alarm;		// the software alarm clock
-	ScheduleRR* scheduleRR; // Timer for Round Robin    
+    ScheduleRR* scheduleRR; 	// Timer for Round Robin    
     Machine *machine;           // the simulated CPU
     SynchConsoleInput *synchConsoleIn;
     SynchConsoleOutput *synchConsoleOut;

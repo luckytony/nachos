@@ -138,20 +138,20 @@ class Interrupt {
 
 
 class ScheduleRR : public CallBackObj {
-	public:
-		ScheduleRR() { 
-			timeSlice = 0;
-			curTick = 1; 
-		}
-		~ScheduleRR() {}
+    public:
+	ScheduleRR() { 
+	    timeSlice = 0;
+	    curTick = 1; 
+	}
+	~ScheduleRR() {}
 		
-		void setTimeSlice(int t) { timeSlice = t; }
-		void resetCurTick() { curTick =0; }
+	void setTimeSlice(int t) { timeSlice = t; }
+	void resetCurTick() { curTick =0; }
 		
-	private:
-		int timeSlice;
-		int curTick;
+    private:
+	int timeSlice;
+	int curTick;
 		
-		void CallBack();
+	void CallBack();
 };
 #endif // INTERRRUPT_H

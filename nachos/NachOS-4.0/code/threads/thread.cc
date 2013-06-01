@@ -23,8 +23,11 @@
 #include "sysdep.h"
 
 #include <cstdlib>
-#include <istream>
+#include <iostream>
 #include <fstream>
+
+// output file for test example
+//fstream outFile;
 
 // this is put at the top of the execution stack, for detecting stack overflows
 const int STACK_FENCEPOST = 0xdedbeef;
@@ -213,9 +216,10 @@ Thread::Yield ()
     
     DEBUG(dbgThread, "Yielding thread: " << name);
     
+    kernel->scheduler->ReadyToRun(this);
     nextThread = kernel->scheduler->FindNextToRun();
     if (nextThread != NULL) {
-	kernel->scheduler->ReadyToRun(this);
+	//kernel->scheduler->ReadyToRun(this);
 	kernel->scheduler->Run(nextThread, FALSE);
     }
     (void) kernel->interrupt->SetLevel(oldLevel);
@@ -450,6 +454,7 @@ ProjThread(int value)
 
 	while (remainTicks > 0){
 		printf("%s %d\n", kernel->currentThread->getName(), remainTicks);
+		//outFile << kernel->currentThread->getName() << " " << remainTicks << "\n";
 		kernel->currentThread->setRemainingExecutionTicks(remainTicks--);
 		kernel->interrupt->OneTick();
     }
@@ -480,7 +485,7 @@ Thread::MyScheduling(char* ParameterFile)
     int numOfThread;
     inFile.getline(line, 128);
     timeslice = atoi(line);
-	kernel->scheduleRR->setTimeSlice(timeslice);
+    kernel->scheduleRR->setTimeSlice(timeslice);
     inFile.getline(line, 128);
     numOfThread = atoi(line);
 
@@ -493,7 +498,7 @@ Thread::MyScheduling(char* ParameterFile)
 	char* str;
         str = strtok(line, " ");
         ThreadName[i] = new char[strlen(str)];
-		memcpy(ThreadName[i], str, strlen(str));
+	memcpy(ThreadName[i], str, strlen(str));
         str = strtok(NULL, " ");
         ThreadPriority[i] = atoi(str);
         str = strtok(NULL, " ");
@@ -503,7 +508,13 @@ Thread::MyScheduling(char* ParameterFile)
                                    << ThreadRemainingExecutionTicks[i]);
     }
     inFile.close();
+	
+	// open outFile
+	//string filename(strtok(ParameterFile, "."));
+	//filename = filename + "_o.txt";
+	//outFile.open(filename.c_str(), ios::out);
 
+	// run test thread
 	Thread* t;
 	for (int i=0; i<numOfThread; i++){
 		t = new Thread(ThreadName[i]);
@@ -512,4 +523,7 @@ Thread::MyScheduling(char* ParameterFile)
 		t->Fork((VoidFunctionPtr)ProjThread, (void*)i);
 	}
 	kernel->currentThread->Yield();
+	
+	// close outFile
+	//outFile.close();
 }
