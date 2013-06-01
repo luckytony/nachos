@@ -97,6 +97,7 @@ Kernel::Initialize()
     interrupt = new Interrupt;		// start up interrupt handling
     scheduler = new Scheduler();	// initialize the ready queue
     //alarm = new Alarm(randomSlice);	// start up time slicing
+	scheduleRR = new ScheduleRR();	// for round robin
     machine = new Machine(debugUserProg);
     synchConsoleIn = new SynchConsoleInput(consoleIn); // input from stdin
     synchConsoleOut = new SynchConsoleOutput(consoleOut); // output to stdout
@@ -123,6 +124,7 @@ Kernel::~Kernel()
     delete interrupt;
     delete scheduler;
     delete alarm;
+	delete scheduleRR;
     delete machine;
     delete synchConsoleIn;
     delete synchConsoleOut;

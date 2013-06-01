@@ -49,6 +49,7 @@ Thread::Thread(char* threadName)
 					// of machine registers
     }
     space = NULL;
+	priority = 255;
 }
 
 //----------------------------------------------------------------------
@@ -446,12 +447,13 @@ static void
 ProjThread(int value)
 {
 	int remainTicks = kernel->currentThread->getRemainingExecutionTicks();
-	while (remainTicks>0){
+
+	while (remainTicks > 0){
 		printf("%s %d\n", kernel->currentThread->getName(), remainTicks);
-		kernel->currentThread->setRemainingExecutionTicks(remainTicks-1);
-		//kernel->interrupt->OneTick();
-		kernel->currentThread->Yield();
+		kernel->currentThread->setRemainingExecutionTicks(remainTicks--);
+		kernel->interrupt->OneTick();
     }
+	kernel->scheduleRR->resetCurTick();
 }
 
 //----------------------------------------------------------------------
@@ -478,6 +480,7 @@ Thread::MyScheduling(char* ParameterFile)
     int numOfThread;
     inFile.getline(line, 128);
     timeslice = atoi(line);
+	kernel->scheduleRR->setTimeSlice(timeslice);
     inFile.getline(line, 128);
     numOfThread = atoi(line);
 
