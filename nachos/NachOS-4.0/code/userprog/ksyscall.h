@@ -46,17 +46,6 @@ int myMul(int op1, int op2)
   return op1 * op2;
 }
 
-int myPrint(char* input, int length)
-{
-  int value = 0;
-  int addr = (int)input;
-  for (int i=0; i<length; i++){
-    kernel->machine->ReadMem((int)addr++, 1, &value);
-    kernel->synchConsoleOut->PutChar((char)value);    
-  }
-  return 0;
-}
-
 int myPrintUInt(int input)
 {
    if (input < 10){

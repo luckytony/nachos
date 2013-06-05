@@ -169,6 +169,13 @@ AddrSpace::Load(char *fileName)
     }
 #endif
 
+    cout << "Loading program: " << fileName << endl;
+    cout << "Number of pages: " << numPages << endl;
+    cout << "Size of code segment: " << noffH.code.size << endl;
+    cout << "Virtual address of code segment: " << noffH.code.virtualAddr << endl;
+    cout << "Size of read-only data segment: " << noffH.readonlyData.size << endl;
+    cout << "Virtual address of read-only data segment: " << noffH.readonlyData.virtualAddr << endl;
+
     delete executable;			// close file
     return TRUE;			// success
 }

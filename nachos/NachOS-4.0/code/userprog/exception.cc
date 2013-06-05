@@ -201,33 +201,8 @@ ExceptionHandler(ExceptionType which)
 
         ASSERTNOTREACHED();
 
-	break;
-
-      case SC_Print:
-	DEBUG(dbgSys, "Print " << kernel->machine->ReadRegister(4) << " with length "
-			       << kernel->machine->ReadRegister(5) << "\n");
-
-	result = myPrint((char*)kernel->machine->ReadRegister(4),
-			 (int)kernel->machine->ReadRegister(5));
- 
-	DEBUG(dbgSys, "Print returning with " << result << "\n");
-
-	kernel->machine->WriteRegister(2, (int)result);
-
-	{
- 	  kernel->machine->WriteRegister(PrevPCReg, kernel->machine->ReadRegister(PCReg));
-	  kernel->machine->WriteRegister(PCReg, kernel->machine->ReadRegister(PCReg) + 4);
-	  kernel->machine->WriteRegister(NextPCReg, kernel->machine->ReadRegister(PCReg)+4);
-	}
-
-	return;
-
-        ASSERTNOTREACHED();
-
-	break;
-
-      case SC_PrintF:
-	DEBUG(dbgSys, "PrintF " << kernel->machine->ReadRegister(4) << " with value " 
+      case SC_OSPrint:
+	DEBUG(dbgSys, "OSPrint " << kernel->machine->ReadRegister(4) << " with value " 
 			<< kernel->machine->ReadRegister(5) << " and " 
 			<< kernel->machine->ReadRegister(6) << " and "
 			<< kernel->machine->ReadRegister(7) << "\n");
@@ -237,7 +212,8 @@ ExceptionHandler(ExceptionType which)
 			  (int)kernel->machine->ReadRegister(6),
 			  (int)kernel->machine->ReadRegister(7));
  
-	DEBUG(dbgSys, "PrintF returning with " << result << "\n");
+
+	DEBUG(dbgSys, "OSPrint returning with " << result << "\n");
 
 	kernel->machine->WriteRegister(2, (int)result);
 

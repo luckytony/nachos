@@ -36,8 +36,7 @@
 #define SC_ThreadJoin   15
 
 #define SC_Add		42
-#define SC_Print	50
-#define SC_PrintF	51
+#define SC_OSPrint	51
 #define SC_OSAdd	52
 #define SC_OSSub	53
 #define SC_OSDiv	54
@@ -69,8 +68,7 @@ int OSAdd(int op1, int op2);
 int OSSub(int op1, int op2);
 int OSDiv(int op1, int op2);
 int OSMul(int op1, int op2);
-int Print(char* input, int length);
-int PrintF(char* input, ...);
+int OSPrint(char* input, ...);
 
 /* Address space control operations: Exit, Exec, Execv, and Join */
 

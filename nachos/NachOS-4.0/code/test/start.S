@@ -90,21 +90,13 @@ OSMul:
 	j	$31
 	.end OSMul
 
-	.global Print
-	.ent	 Print
-Print:
-	addiu $2,$0,SC_Print
+	.global OSPrint
+	.ent	 OSPrint
+OSPrint:
+	addiu $2,$0,SC_OSPrint
 	syscall
 	j	$31
-	.end Print
-
-	.global PrintF
-	.ent	 PrintF
-PrintF:
-	addiu $2,$0,SC_PrintF
-	syscall
-	j	$31
-	.end PrintF
+	.end OSPrint
 
 	.globl Exit
 	.ent	Exit
