@@ -131,9 +131,8 @@ Scheduler::Run (Thread *nextThread, bool finishing)
     // of view of the thread and from the perspective of the "outside world".
 
     SWITCH(oldThread, nextThread);
-
     // we're back, running oldThread
-      
+   
     // interrupts are off when we return from switch!
     ASSERT(kernel->interrupt->getLevel() == IntOff);
 

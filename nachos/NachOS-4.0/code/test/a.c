@@ -15,5 +15,4 @@ int main(){
         OSPrint("%da009\n", i);
         OSPrint("%da010\n", i);
     }
-    Halt();
 }

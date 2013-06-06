@@ -20,7 +20,7 @@
 
 class AddrSpace {
   public:
-    AddrSpace();			// Create an address space.
+    AddrSpace(int offset);		// Create an address space.
     ~AddrSpace();			// De-allocate an address space
 
     bool Load(char *fileName);		// Load a program into addr space from
@@ -34,6 +34,8 @@ class AddrSpace {
     void SaveState();			// Save/restore address space-specific
     void RestoreState();		// info on a context switch 
 
+    int  getMemTail(){ return phyMemTail; }
+
     // Translate virtual address _vaddr_
     // to physical address _paddr_. _mode_
     // is 0 for Read, 1 for Write.
@@ -44,6 +46,8 @@ class AddrSpace {
 					// for now!
     unsigned int numPages;		// Number of pages in the virtual 
 					// address space
+    int phyMemHead; 			// head of physcial memory
+    int phyMemTail;                      // tail of physical memory
 
     void InitRegisters();		// Initialize user-level CPU registers,
 					// before jumping to user code

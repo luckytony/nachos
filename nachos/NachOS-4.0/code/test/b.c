@@ -15,5 +15,4 @@ int main(){
         OSPrint("%db009\n", i);
         OSPrint("%db010\n", i);
     }
-    Halt();
 }

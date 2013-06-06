@@ -46,6 +46,9 @@
 #include "openfile.h"
 #include "sysdep.h"
 
+#include <vector>
+using std::vector;
+
 // global variables
 Kernel *kernel;
 Debug *debug;
@@ -168,7 +171,8 @@ main(int argc, char **argv)
 {
     int i;
     char *debugArg = "";
-    char *userProgName = NULL;        // default is not to execute a user prog
+    vector<char*> usrProgName;       // vector to store usrprogram name
+    bool usrProgFlag = false;      // indicate whether the following arg is usrprogram
     bool threadTestFlag = false;
     bool consoleTestFlag = false;
     bool networkTestFlag = false;
@@ -195,8 +199,7 @@ main(int argc, char **argv)
 	}
 	else if (strcmp(argv[i], "-x") == 0) {
 	    ASSERT(i + 1 < argc);
-	    userProgName = argv[i + 1];
-	    i++;
+	    usrProgFlag = true;
 	}
 	else if (strcmp(argv[i], "-K") == 0) {
 	    threadTestFlag = TRUE;
@@ -241,7 +244,11 @@ main(int argc, char **argv)
             cout << "Partial usage: nachos [-l] [-D]\n";
 #endif //FILESYS_STUB
 	}
-
+        else {
+            if (usrProgFlag){
+                usrProgName.push_back(argv[i]);
+            }
+        }
     }
     debug = new Debug(debugArg);
     
@@ -284,13 +291,34 @@ main(int argc, char **argv)
 #endif // FILESYS_STUB
 
     // finally, run an initial user program if requested to do so
-    if (userProgName != NULL) {
-      AddrSpace *space = new AddrSpace;
-      ASSERT(space != (AddrSpace *)NULL);
-      if (space->Load(userProgName)) {  // load the program into the space
-	space->Execute();              // run the program
-	ASSERTNOTREACHED();            // Execute never returns
-      }
+    if (usrProgFlag) {
+        int offset = 0;
+        int numOfProg = usrProgName.size();
+        Thread* t;
+        AddrSpace* space;
+        /*
+        for (int i=0; i< numOfProg; i++){
+            t = new Thread(usrProgName[i]);
+            space = new AddrSpace(offset);
+            ASSERT(space != (AddrSpace *)NULL);
+            if (space->Load(usrProgName[i])) {      // load the program into the space
+	        t->space = space;
+                IntStatus oldLevel = kernel->interrupt->SetLevel(IntOff);
+                kernel->scheduler->ReadyToRun(t);   // put the thread in ready list
+                (void) kernel->interrupt->SetLevel(oldLevel);
+            }
+            offset = space->getMemTail();
+        }
+        */
+        t = new Thread(usrProgName[numOfProg-1]);
+        space = new AddrSpace(offset);
+        ASSERT(space != (AddrSpace *)NULL);
+        if (space->Load(usrProgName[numOfProg-1])){
+            t->space = space;
+            space->Execute();
+        }
+        
+        //kernel->currentThread->Yield();
     }
 
     // If we don't run a user program, we may get here.

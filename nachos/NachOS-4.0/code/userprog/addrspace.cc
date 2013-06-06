@@ -65,8 +65,10 @@ SwapHeader (NoffHeader *noffH)
 //	only uniprogramming, and we have a single unsegmented page table
 //----------------------------------------------------------------------
 
-AddrSpace::AddrSpace()
+AddrSpace::AddrSpace(int offset)
 {
+    phyMemHead = offset;
+    /*
     pageTable = new TranslationEntry[NumPhysPages];
     for (int i = 0; i < NumPhysPages; i++) {
 	pageTable[i].virtualPage = i;	// for now, virt page # = phys page #
@@ -76,7 +78,7 @@ AddrSpace::AddrSpace()
 	pageTable[i].dirty = FALSE;
 	pageTable[i].readOnly = FALSE;  
     }
-    
+    */
     // zero out the entire address space
     bzero(kernel->machine->mainMemory, MemorySize);
 }
@@ -175,6 +177,17 @@ AddrSpace::Load(char *fileName)
     cout << "Virtual address of code segment: " << noffH.code.virtualAddr << endl;
     cout << "Size of read-only data segment: " << noffH.readonlyData.size << endl;
     cout << "Virtual address of read-only data segment: " << noffH.readonlyData.virtualAddr << endl;
+
+    pageTable = new TranslationEntry[numPages];
+    for (int i = 0; i < numPages; i++) {
+	pageTable[i].virtualPage = i;
+	pageTable[i].physicalPage = phyMemHead+i;
+	pageTable[i].valid = TRUE;
+	pageTable[i].use = FALSE;
+	pageTable[i].dirty = FALSE;
+	pageTable[i].readOnly = FALSE;  
+    }
+    phyMemTail = phyMemHead + numPages;
 
     delete executable;			// close file
     return TRUE;			// success

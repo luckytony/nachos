@@ -62,6 +62,11 @@ int myPrintUInt(int input)
    return 1;
 }
 
+int myExit(int status)
+{
+    //kernel->currentThread->Finish();
+}
+
 int myPrintF(char* input, ...)
 {
    va_list list;

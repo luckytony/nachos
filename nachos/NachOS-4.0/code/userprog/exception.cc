@@ -229,6 +229,25 @@ ExceptionHandler(ExceptionType which)
 
 	break;
 
+      case SC_Exit:
+	op1 = kernel->machine->ReadRegister(4);
+
+	DEBUG(dbgSys, "Exit user program\n");
+	
+	myExit(op1);
+
+	DEBUG(dbgSys, "Mul returning with " << result << "\n");
+
+	{
+ 	  kernel->machine->WriteRegister(PrevPCReg, kernel->machine->ReadRegister(PCReg));
+	  kernel->machine->WriteRegister(PCReg, kernel->machine->ReadRegister(PCReg) + 4);
+	  kernel->machine->WriteRegister(NextPCReg, kernel->machine->ReadRegister(PCReg)+4);
+	}
+
+	return;
+
+        ASSERTNOTREACHED();
+
       default:
 	cerr << "Unexpected system call " << type << "\n";
 	break;
