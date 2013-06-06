@@ -80,7 +80,7 @@ AddrSpace::AddrSpace(int offset)
     }
     */
     // zero out the entire address space
-    bzero(kernel->machine->mainMemory, MemorySize);
+    //bzero(kernel->machine->mainMemory, MemorySize);
 }
 
 //----------------------------------------------------------------------
@@ -144,40 +144,7 @@ AddrSpace::Load(char *fileName)
 
     DEBUG(dbgAddr, "Initializing address space: " << numPages << ", " << size);
 
-// then, copy in the code and data segments into memory
-// Note: this code assumes that virtual address = physical address
-    if (noffH.code.size > 0) {
-        DEBUG(dbgAddr, "Initializing code segment.");
-	DEBUG(dbgAddr, noffH.code.virtualAddr << ", " << noffH.code.size);
-        executable->ReadAt(
-		&(kernel->machine->mainMemory[noffH.code.virtualAddr]), 
-			noffH.code.size, noffH.code.inFileAddr);
-    }
-    if (noffH.initData.size > 0) {
-        DEBUG(dbgAddr, "Initializing data segment.");
-	DEBUG(dbgAddr, noffH.initData.virtualAddr << ", " << noffH.initData.size);
-        executable->ReadAt(
-		&(kernel->machine->mainMemory[noffH.initData.virtualAddr]),
-			noffH.initData.size, noffH.initData.inFileAddr);
-    }
-
-#ifdef RDATA
-    if (noffH.readonlyData.size > 0) {
-        DEBUG(dbgAddr, "Initializing read only data segment.");
-	DEBUG(dbgAddr, noffH.readonlyData.virtualAddr << ", " << noffH.readonlyData.size);
-        executable->ReadAt(
-		&(kernel->machine->mainMemory[noffH.readonlyData.virtualAddr]),
-			noffH.readonlyData.size, noffH.readonlyData.inFileAddr);
-    }
-#endif
-
-    cout << "Loading program: " << fileName << endl;
-    cout << "Number of pages: " << numPages << endl;
-    cout << "Size of code segment: " << noffH.code.size << endl;
-    cout << "Virtual address of code segment: " << noffH.code.virtualAddr << endl;
-    cout << "Size of read-only data segment: " << noffH.readonlyData.size << endl;
-    cout << "Virtual address of read-only data segment: " << noffH.readonlyData.virtualAddr << endl;
-
+// create suitable page table
     pageTable = new TranslationEntry[numPages];
     for (int i = 0; i < numPages; i++) {
 	pageTable[i].virtualPage = i;
@@ -188,6 +155,40 @@ AddrSpace::Load(char *fileName)
 	pageTable[i].readOnly = FALSE;  
     }
     phyMemTail = phyMemHead + numPages;
+
+// then, copy in the code and data segments into memory
+// Note: this code assumes that virtual address = physical address
+    if (noffH.code.size > 0) {
+        DEBUG(dbgAddr, "Initializing code segment.");
+	DEBUG(dbgAddr, noffH.code.virtualAddr << ", " << noffH.code.size);
+        executable->ReadAt(
+		&(kernel->machine->mainMemory[noffH.code.virtualAddr+phyMemHead*PageSize]), 
+			noffH.code.size, noffH.code.inFileAddr);
+    }
+    if (noffH.initData.size > 0) {
+        DEBUG(dbgAddr, "Initializing data segment.");
+	DEBUG(dbgAddr, noffH.initData.virtualAddr << ", " << noffH.initData.size);
+        executable->ReadAt(
+		&(kernel->machine->mainMemory[noffH.initData.virtualAddr+phyMemHead*PageSize]),
+			noffH.initData.size, noffH.initData.inFileAddr);
+    }
+
+#ifdef RDATA
+    if (noffH.readonlyData.size > 0) {
+        DEBUG(dbgAddr, "Initializing read only data segment.");
+	DEBUG(dbgAddr, noffH.readonlyData.virtualAddr << ", " << noffH.readonlyData.size);
+        executable->ReadAt(
+		&(kernel->machine->mainMemory[noffH.readonlyData.virtualAddr+phyMemHead*PageSize]),
+			noffH.readonlyData.size, noffH.readonlyData.inFileAddr);
+    }
+#endif
+
+    cout << "Loading program: " << fileName << endl;
+    cout << "Number of pages: " << numPages << endl;
+    cout << "Size of code segment: " << noffH.code.size << endl;
+    cout << "Virtual address of code segment: " << noffH.code.virtualAddr << endl;
+    cout << "Size of read-only data segment: " << noffH.readonlyData.size << endl;
+    cout << "Virtual address of read-only data segment: " << noffH.readonlyData.virtualAddr << endl;
 
     delete executable;			// close file
     return TRUE;			// success

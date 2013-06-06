@@ -296,7 +296,7 @@ main(int argc, char **argv)
         int numOfProg = usrProgName.size();
         Thread* t;
         AddrSpace* space;
-        /*
+
         for (int i=0; i< numOfProg; i++){
             t = new Thread(usrProgName[i]);
             space = new AddrSpace(offset);
@@ -309,16 +309,7 @@ main(int argc, char **argv)
             }
             offset = space->getMemTail();
         }
-        */
-        t = new Thread(usrProgName[numOfProg-1]);
-        space = new AddrSpace(offset);
-        ASSERT(space != (AddrSpace *)NULL);
-        if (space->Load(usrProgName[numOfProg-1])){
-            t->space = space;
-            space->Execute();
-        }
-        
-        //kernel->currentThread->Yield();
+        kernel->machine->Run();
     }
 
     // If we don't run a user program, we may get here.
