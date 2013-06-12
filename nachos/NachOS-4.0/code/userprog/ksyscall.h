@@ -32,7 +32,7 @@ int SysAdd(int op1, int op2)
 //----------------------------------------------------------------------
 int myExit(int status)
 {
-    //kernel->currentThread->Finish();
+    kernel->currentThread->Finish();
 }
 
 //----------------------------------------------------------------------

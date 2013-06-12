@@ -304,12 +304,12 @@ main(int argc, char **argv)
             ASSERT(space != (AddrSpace *)NULL);
             if (space->Load(usrProgName[i])) {      // load the program into the space
 	        t->space = space;
+                t->setPriority(0);
                 t->Fork((VoidFunctionPtr)exeUsrProg, NULL);
             }
             offset = space->getMemTail();
         }
         kernel->currentThread->Yield();
-        kernel->machine->Run();
     }
 
     // If we don't run a user program, we may get here.

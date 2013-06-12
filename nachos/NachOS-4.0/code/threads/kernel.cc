@@ -97,6 +97,7 @@ Kernel::Initialize()
     interrupt = new Interrupt;		// start up interrupt handling
     scheduler = new Scheduler();	// initialize the ready queue
     //alarm = new Alarm(randomSlice);	// start up time slicing
+    scheduleRR = new ScheduleRR();
     machine = new Machine(debugUserProg);
     synchConsoleIn = new SynchConsoleInput(consoleIn); // input from stdin
     synchConsoleOut = new SynchConsoleOutput(consoleOut); // output to stdout

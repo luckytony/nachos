@@ -37,6 +37,8 @@
 #include "list.h"
 #include "callback.h"
 
+#define TIME_SLICE 100
+
 // Interrupts can be disabled (IntOff) or enabled (IntOn)
 enum IntStatus { IntOff, IntOn };
 
@@ -134,6 +136,25 @@ class Interrupt {
 
     void ChangeLevel(IntStatus old, 	// SetLevel, without advancing the
 			IntStatus now); // simulated time
+};
+
+
+class ScheduleRR : public CallBackObj {
+    public:
+        ScheduleRR() {
+            timeSlice = TIME_SLICE;
+            curTick = 1;
+        }
+        ~ScheduleRR(){}
+
+        void setTimeSlice(int t) { timeSlice = t; }
+        void resetTimeTick() { curTick = 0; }
+
+    private:
+        int timeSlice;
+        int curTick;
+
+        void CallBack();
 };
 
 #endif // INTERRRUPT_H

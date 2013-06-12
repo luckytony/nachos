@@ -104,6 +104,8 @@ class Thread {
     char* getName() { return (name); }
     void Print() { cout << name; }
     void SelfTest();		// test whether thread impl is working
+    void setPriority(int p) { priority = p; }
+    int getPriority() { return priority; }
 
   private:
     // some of the private data for this class is listed above
@@ -113,6 +115,7 @@ class Thread {
 				// (If NULL, don't deallocate stack)
     ThreadStatus status;	// ready, running or blocked
     char* name;
+    int priority;
 
     void StackAllocate(VoidFunctionPtr func, void *arg);
     				// Allocate a stack for thread.

@@ -164,6 +164,7 @@ Interrupt::OneTick()
     ChangeLevel(IntOn, IntOff);	// first, turn off interrupts
 				// (interrupt handlers run with
 				// interrupts disabled)
+    Schedule(kernel->scheduleRR, 1, TimerInt);
     CheckIfDue(FALSE);		// check for pending interrupts
     ChangeLevel(IntOff, IntOn);	// re-enable interrupts
     if (yieldOnReturn) {	// if the timer device handler asked 
@@ -348,4 +349,20 @@ Interrupt::DumpState()
     cout << "Pending interrupts:\n";
     pending->Apply(PrintPending);
     cout << "\nEnd of pending interrupts\n";
+}
+
+//----------------------------------------------------------------------
+// 	void ScheduleRR::CallBack()
+//----------------------------------------------------------------------
+void
+ScheduleRR::CallBack()
+{
+    ASSERT(timeSlice>0);
+    curTick++;
+
+    if (curTick == timeSlice){
+        curTick = 0;
+        cout << "###Context Switch###\n";
+        kernel->interrupt->YieldOnReturn();
+    }
 }

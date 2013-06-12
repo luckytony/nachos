@@ -48,7 +48,8 @@ class Kernel {
     Scheduler *scheduler;	// the ready list
     Interrupt *interrupt;	// interrupt status
     Statistics *stats;		// performance metrics
-    Alarm *alarm;		// the software alarm clock    
+    Alarm *alarm;		// the software alarm clock
+    ScheduleRR *scheduleRR;    
     Machine *machine;           // the simulated CPU
     SynchConsoleInput *synchConsoleIn;
     SynchConsoleOutput *synchConsoleOut;
