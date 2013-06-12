@@ -37,10 +37,6 @@
 
 #define SC_Add		42
 #define SC_OSPrint	51
-#define SC_OSAdd	52
-#define SC_OSSub	53
-#define SC_OSDiv	54
-#define SC_OSMul	55
 
 #ifndef IN_ASM
 
@@ -64,11 +60,7 @@ void Halt();
 
 int Add(int op1, int op2);
 
-int OSAdd(int op1, int op2);
-int OSSub(int op1, int op2);
-int OSDiv(int op1, int op2);
-int OSMul(int op1, int op2);
-int OSPrint(char* input, ...);
+int OSPrint(char* input, int value);
 
 /* Address space control operations: Exit, Exec, Execv, and Join */
 

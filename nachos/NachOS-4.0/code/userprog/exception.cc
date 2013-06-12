@@ -99,120 +99,13 @@ ExceptionHandler(ExceptionType which)
 
 	break;
 
-      case SC_OSAdd: 
-	op1 = kernel->machine->ReadRegister(4);
-	op2 = kernel->machine->ReadRegister(5);
-
-	DEBUG(dbgSys, "Add " << op1 << " + " << op2 << "\n");
-	
-	result = myAdd(op1, op2);
-
-	DEBUG(dbgSys, "Add returning with " << result << "\n");
-	
-	kernel->machine->WriteRegister(2, (int)result);
-
-	{
- 	  kernel->machine->WriteRegister(PrevPCReg, kernel->machine->ReadRegister(PCReg));
-	  kernel->machine->WriteRegister(PCReg, kernel->machine->ReadRegister(PCReg) + 4);
-	  kernel->machine->WriteRegister(NextPCReg, kernel->machine->ReadRegister(PCReg)+4);
-	}
-
-	myKernelPrintF("The return value of OSAdd(%d, %d) is %d\n", op1, op2, (int)result);
-
-	return;
-
-        ASSERTNOTREACHED();
-
-	break;
-
-      case SC_OSSub:
-	op1 = kernel->machine->ReadRegister(4);
-	op2 = kernel->machine->ReadRegister(5);
-
-	DEBUG(dbgSys, "Sub " << op1 << " - " << op2 << "\n");
-	
-	result = mySub(op1, op2);
-
-	myKernelPrintF("The return value of OSSub(%d, %d) is %d\n", op1, op2, (int)result);
-	
-	DEBUG(dbgSys, "Sub returning with " << result << "\n");
-
-	kernel->machine->WriteRegister(2, (int)result);
-
-	{
-          kernel->machine->WriteRegister(PrevPCReg, kernel->machine->ReadRegister(PCReg));
-	  kernel->machine->WriteRegister(PCReg, kernel->machine->ReadRegister(PCReg) + 4);
-	  kernel->machine->WriteRegister(NextPCReg, kernel->machine->ReadRegister(PCReg)+4);
-	}
-
-	return;
-
-        ASSERTNOTREACHED();
-
-	break;
-
-      case SC_OSDiv:
-	op1 = kernel->machine->ReadRegister(4);
-	op2 = kernel->machine->ReadRegister(5);
-
-	DEBUG(dbgSys, "Div " << op1 << " / " << op2 << "\n");
-	
-	result = myDiv(op1, op2);
-
-	myKernelPrintF("The return value of OSDiv(%d, %d) is %d\n", op1, op2, (int)result);
-
-	DEBUG(dbgSys, "Div returning with " << result << "\n");
-
-	kernel->machine->WriteRegister(2, (int)result);
-
-	{
- 	  kernel->machine->WriteRegister(PrevPCReg, kernel->machine->ReadRegister(PCReg));
-	  kernel->machine->WriteRegister(PCReg, kernel->machine->ReadRegister(PCReg) + 4);
-	  kernel->machine->WriteRegister(NextPCReg, kernel->machine->ReadRegister(PCReg)+4);
-	}
-
-	return;
-
-        ASSERTNOTREACHED();
-
-	break;
-
-      case SC_OSMul:
-	op1 = kernel->machine->ReadRegister(4);
-	op2 = kernel->machine->ReadRegister(5);
-
-	DEBUG(dbgSys, "Mul " << op1 << " * " << op2 << "\n");
-	
-	result = myMul(op1, op2);
-
-	myKernelPrintF("The return value of OSMul(%d, %d) is %d\n", op1, op2, (int)result);
-	
-	DEBUG(dbgSys, "Mul returning with " << result << "\n");
-
-	kernel->machine->WriteRegister(2, (int)result);
-
-	{
- 	  kernel->machine->WriteRegister(PrevPCReg, kernel->machine->ReadRegister(PCReg));
-	  kernel->machine->WriteRegister(PCReg, kernel->machine->ReadRegister(PCReg) + 4);
-	  kernel->machine->WriteRegister(NextPCReg, kernel->machine->ReadRegister(PCReg)+4);
-	}
-
-	return;
-
-        ASSERTNOTREACHED();
-
       case SC_OSPrint:
 	DEBUG(dbgSys, "OSPrint " << kernel->machine->ReadRegister(4) << " with value " 
-			<< kernel->machine->ReadRegister(5) << " and " 
-			<< kernel->machine->ReadRegister(6) << " and "
-			<< kernel->machine->ReadRegister(7) << "\n");
+			<< kernel->machine->ReadRegister(5) << "\n"); 
 
-	result = myPrintF((char*)kernel->machine->ReadRegister(4),
-			  (int)kernel->machine->ReadRegister(5),
-			  (int)kernel->machine->ReadRegister(6),
-			  (int)kernel->machine->ReadRegister(7));
+	result = myPrint((int)kernel->machine->ReadRegister(4),
+			 (int)kernel->machine->ReadRegister(5));
  
-
 	DEBUG(dbgSys, "OSPrint returning with " << result << "\n");
 
 	kernel->machine->WriteRegister(2, (int)result);

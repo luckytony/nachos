@@ -53,6 +53,7 @@ using std::vector;
 Kernel *kernel;
 Debug *debug;
 
+static void exeUsrProg(int value);
 
 //----------------------------------------------------------------------
 // Cleanup
@@ -303,12 +304,11 @@ main(int argc, char **argv)
             ASSERT(space != (AddrSpace *)NULL);
             if (space->Load(usrProgName[i])) {      // load the program into the space
 	        t->space = space;
-                IntStatus oldLevel = kernel->interrupt->SetLevel(IntOff);
-                kernel->scheduler->ReadyToRun(t);   // put the thread in ready list
-                (void) kernel->interrupt->SetLevel(oldLevel);
+                t->Fork((VoidFunctionPtr)exeUsrProg, NULL);
             }
             offset = space->getMemTail();
         }
+        kernel->currentThread->Yield();
         kernel->machine->Run();
     }
 
@@ -321,3 +321,9 @@ main(int argc, char **argv)
     ASSERTNOTREACHED();
 }
 
+
+static void
+exeUsrProg(int value)
+{
+    kernel->currentThread->space->Execute();
+}
