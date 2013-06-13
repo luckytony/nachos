@@ -129,7 +129,7 @@ ExceptionHandler(ExceptionType which)
 	
 	myExit(op1);
 
-	DEBUG(dbgSys, "Mul returning with " << result << "\n");
+	DEBUG(dbgSys, "Exit returning with " << result << "\n");
 
 	{
  	  kernel->machine->WriteRegister(PrevPCReg, kernel->machine->ReadRegister(PCReg));

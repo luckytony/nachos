@@ -128,6 +128,7 @@ class Interrupt {
 				// on return from the interrupt handler
     MachineStatus status;	// idle, kernel mode, user mode
 
+    int tickCounter;
     // these functions are internal to the interrupt simulation code
 
     bool CheckIfDue(bool advanceClock); 

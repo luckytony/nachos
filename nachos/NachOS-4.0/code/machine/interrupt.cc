@@ -76,6 +76,7 @@ Interrupt::Interrupt()
     inHandler = FALSE;
     yieldOnReturn = FALSE;
     status = SystemMode;
+    tickCounter = 0;
 }
 
 //----------------------------------------------------------------------
@@ -154,17 +155,24 @@ Interrupt::OneTick()
     if (status == SystemMode) {
         stats->totalTicks += SystemTick;
 	stats->systemTicks += SystemTick;
+        tickCounter+=SystemTick;
     } else {
 	stats->totalTicks += UserTick;
 	stats->userTicks += UserTick;
+        tickCounter+=UserTick;
     }
     DEBUG(dbgInt, "== Tick " << stats->totalTicks << " ==");
 
+    // context switch every 100 ticks
+    if (tickCounter >= 100){
+        yieldOnReturn = true;
+        tickCounter = tickCounter - 100;
+    }
 // check any pending interrupts are now ready to fire
     ChangeLevel(IntOn, IntOff);	// first, turn off interrupts
 				// (interrupt handlers run with
 				// interrupts disabled)
-    Schedule(kernel->scheduleRR, 1, TimerInt);
+    //Schedule(kernel->scheduleRR, 1, TimerInt);
     CheckIfDue(FALSE);		// check for pending interrupts
     ChangeLevel(IntOff, IntOn);	// re-enable interrupts
     if (yieldOnReturn) {	// if the timer device handler asked 

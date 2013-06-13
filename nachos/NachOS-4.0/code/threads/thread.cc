@@ -211,6 +211,7 @@ Thread::Yield ()
     
     nextThread = kernel->scheduler->FindNextToRun();
     if (nextThread != NULL) {
+        cout << "###Context Switch###\n";
 	kernel->scheduler->ReadyToRun(this);
 	kernel->scheduler->Run(nextThread, FALSE);
     }
@@ -252,6 +253,7 @@ Thread::Sleep (bool finishing)
 	kernel->interrupt->Idle();	// no one to run, wait for an interrupt
     
     // returns when it's time for us to run
+    cout << "###Context Switch###\n";
     kernel->scheduler->Run(nextThread, finishing); 
 }
 
