@@ -14,6 +14,7 @@
 #include "kernel.h"
 #include "synchconsole.h"
 #include <stdarg.h>
+#include <sstream>
 
 void SysHalt()
 {
@@ -33,60 +34,30 @@ int SysAdd(int op1, int op2)
 int myExit(int status)
 {
     kernel->currentThread->Finish();
+    return 1;
 }
 
 //----------------------------------------------------------------------
-// myPrint(in address, int value)
-//     print something like ("Hello World %d", 1)
+// string int2str(int val)
+//     convert integer to string
 //----------------------------------------------------------------------
-int myPrint(int address, int input)
+string int2str(int val)
 {
-     int addr = address;
-     int value = 0;
-     int idx = 0;
-     char str[128];
-     while(true){
-         kernel->machine->ReadMem(addr++, 1, &value);
-         if (value == '\0')
-             break;
-         else
-             str[idx++] = (char)value;
-     }
-     printf(str, input);
-     return 1;
+    ostringstream out;
+    out << val;
+    return out.str();
 }
 
 //----------------------------------------------------------------------
-// myPrintUint(int input)
-//     print unsigned integer
-//----------------------------------------------------------------------
-int myPrintUInt(int input)
-{
-   if (input < 10){
-      input = input + 48;
-      kernel->synchConsoleOut->PutChar((char)input);
-   }
-   else{
-      int reminder = input % 10;
-      input = input / 10;
-      myPrintUInt(input);
-      reminder = reminder + 48;
-      kernel->synchConsoleOut->PutChar((char)reminder);
-   }
-   return 1;
-}
-
-
-//----------------------------------------------------------------------
-// myPrintF(char* input, ...)
+// myPrintF(int address, int value)
 //     like printf, but only print char and integer
 //----------------------------------------------------------------------
-int myPrintF(char* input, ...)
+int myPrintF(int address, int input)
 {
-   va_list list;
-   va_start(list, input);
+   char str[128];
    int value = 0;
-   int addr = (int)input;
+   int idx = 0;
+   int addr = address;
    while(true){
       kernel->machine->ReadMem((int)addr++, 1, &value);
       if (value == '\0')
@@ -95,25 +66,21 @@ int myPrintF(char* input, ...)
          int format = 0;
 	 kernel->machine->ReadMem((int)addr++, 1, &format);
 	 if (format != 'd'){
-	    kernel->synchConsoleOut->PutChar((char)value);
-	    kernel->synchConsoleOut->PutChar((char)format);
+            str[idx++] = (char)value;
+            str[idx++] = (char)format;
 	 }
 	 else{
-            format = va_arg(list, int);
-	    if (format < 0){
-	       kernel->synchConsoleOut->PutChar('-');
-	       format = 0 - format;
-	    }
-	    myPrintUInt(format);
+	    string s = int2str(input);
+            for (int i=0; i<s.size(); i++)
+                str[idx++] = s[i];
 	 }
       }
       else
-	 kernel->synchConsoleOut->PutChar((char)value);
+	 str[idx++] = (char)value;
    }
-
-   va_end(list);
+   kernel->synchConsoleOut->PutString(str, idx);
+   //printf(str);
    return 1;
-
 }
 
 

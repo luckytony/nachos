@@ -103,7 +103,7 @@ ExceptionHandler(ExceptionType which)
 	DEBUG(dbgSys, "OSPrint " << kernel->machine->ReadRegister(4) << " with value " 
 			<< kernel->machine->ReadRegister(5) << "\n"); 
 
-	result = myPrint((int)kernel->machine->ReadRegister(4),
+	result = myPrintF((int)kernel->machine->ReadRegister(4),
 			 (int)kernel->machine->ReadRegister(5));
  
 	DEBUG(dbgSys, "OSPrint returning with " << result << "\n");

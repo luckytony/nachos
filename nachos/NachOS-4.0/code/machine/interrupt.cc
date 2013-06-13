@@ -165,6 +165,7 @@ Interrupt::OneTick()
 
     // context switch every 100 ticks
     if (tickCounter >= 100){
+        //cout << "Yield due to tick\n";
         yieldOnReturn = true;
         tickCounter = tickCounter - 100;
     }
