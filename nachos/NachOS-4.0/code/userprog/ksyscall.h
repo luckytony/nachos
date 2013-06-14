@@ -34,6 +34,8 @@ int SysAdd(int op1, int op2)
 int myExit(int status)
 {
     numUsrProg--;
+    numThread--;
+    cout << kernel->currentThread->getName() << " Terminated\n";
     kernel->currentThread->Finish();
     return 1;
 }
@@ -81,8 +83,8 @@ int myPrintF(int address, int input)
       else
 	 str[idx++] = (char)value;
    }
-   //kernel->synchConsoleOut->PutString(str, idx);
-   printf(str);
+   kernel->synchConsoleOut->PutString(str, idx);
+   //printf(str);
    return 1;
 }
 

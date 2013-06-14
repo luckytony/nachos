@@ -209,12 +209,18 @@ Thread::Yield ()
     
     DEBUG(dbgThread, "Yielding thread: " << name);
     
+    //nextThread = kernel->scheduler->FindNextToRun();
+    //if (nextThread != NULL) {
+    //    cout << "###Context Switch###\n";
+    //	kernel->scheduler->ReadyToRun(this);
+    //	kernel->scheduler->Run(nextThread, FALSE);
+    //}
+    kernel->scheduler->ReadyToRun(this);
     nextThread = kernel->scheduler->FindNextToRun();
-    if (nextThread != NULL) {
-        cout << "###Context Switch###\n";
-	kernel->scheduler->ReadyToRun(this);
-	kernel->scheduler->Run(nextThread, FALSE);
-    }
+    if (strcmp(kernel->currentThread->getName(), nextThread->getName()) != 0)
+       cout << "###Context Switch###\n";
+    kernel->scheduler->Run(nextThread, FALSE);
+
     (void) kernel->interrupt->SetLevel(oldLevel);
 }
 
@@ -248,12 +254,15 @@ Thread::Sleep (bool finishing)
     
     DEBUG(dbgThread, "Sleeping thread: " << name);
     status = BLOCKED;
-    while ((nextThread = kernel->scheduler->FindNextToRun()) == NULL || 
-           (numThread == 1 && numUsrProg > 0)){
+    while (numThread == 1 && numUsrProg > 0){
+        kernel->interrupt->Idle();
+    }
+    while ((nextThread = kernel->scheduler->FindNextToRun()) == NULL){
 	kernel->interrupt->Idle();	// no one to run, wait for an interrupt
     }
     // returns when it's time for us to run
-    cout << "###Context Switch###\n";
+    if (strcmp(kernel->currentThread->getName(), nextThread->getName()) != 0)
+       cout << "###Context Switch###\n";
     kernel->scheduler->Run(nextThread, finishing); 
 }
 
