@@ -83,6 +83,7 @@ Semaphore::P()
     
     while (value == 0) { 		// semaphore not available
 	queue->Append(currentThread);	// so go to sleep
+        numThread--;
 	currentThread->Sleep(FALSE);
     } 
     value--; 			// semaphore available, consume its value
@@ -109,6 +110,7 @@ Semaphore::V()
     
     if (!queue->IsEmpty()) {  // make thread ready.
 	kernel->scheduler->ReadyToRun(queue->RemoveFront());
+        numThread++;
     }
     value++;
     

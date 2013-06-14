@@ -24,6 +24,8 @@
 #include "interrupt.h"
 #include "main.h"
 
+#define SWITCH_TICKS 100
+
 // String definitions for debugging messages
 
 static char *intLevelNames[] = { "off", "on"};
@@ -164,10 +166,10 @@ Interrupt::OneTick()
     DEBUG(dbgInt, "== Tick " << stats->totalTicks << " ==");
 
     // context switch every 100 ticks
-    if (tickCounter >= 100){
+    if (tickCounter >= SWITCH_TICKS){
         //cout << "Yield due to tick\n";
         yieldOnReturn = true;
-        tickCounter = tickCounter - 100;
+        tickCounter = tickCounter - SWITCH_TICKS;
     }
 // check any pending interrupts are now ready to fire
     ChangeLevel(IntOn, IntOff);	// first, turn off interrupts

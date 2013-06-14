@@ -14,6 +14,8 @@
 
 extern Kernel *kernel;
 extern Debug *debug;
+extern int numThread;
+extern int numUsrProg;
 
 #endif // MAIN_H
 

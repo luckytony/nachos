@@ -53,6 +53,9 @@ using std::vector;
 Kernel *kernel;
 Debug *debug;
 
+int numUsrProg;
+int numThread;
+
 static void exeUsrProg(int value);
 
 //----------------------------------------------------------------------
@@ -294,11 +297,12 @@ main(int argc, char **argv)
     // finally, run an initial user program if requested to do so
     if (usrProgFlag) {
         int offset = 0;
-        int numOfProg = usrProgName.size();
+        numUsrProg = usrProgName.size();
+        numThread = numUsrProg + 1;
         Thread* t;
         AddrSpace* space;
 
-        for (int i=0; i< numOfProg; i++){
+        for (int i=0; i< numUsrProg; i++){
             t = new Thread(usrProgName[i]);
             space = new AddrSpace(offset);
             ASSERT(space != (AddrSpace *)NULL);

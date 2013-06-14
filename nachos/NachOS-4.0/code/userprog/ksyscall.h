@@ -33,6 +33,7 @@ int SysAdd(int op1, int op2)
 //----------------------------------------------------------------------
 int myExit(int status)
 {
+    numUsrProg--;
     kernel->currentThread->Finish();
     return 1;
 }
@@ -60,8 +61,10 @@ int myPrintF(int address, int input)
    int addr = address;
    while(true){
       kernel->machine->ReadMem((int)addr++, 1, &value);
-      if (value == '\0')
+      if (value == '\0'){
+         str[idx++] = value;
 	 break;
+      }
       if ((char)value == '%'){
          int format = 0;
 	 kernel->machine->ReadMem((int)addr++, 1, &format);
@@ -78,8 +81,8 @@ int myPrintF(int address, int input)
       else
 	 str[idx++] = (char)value;
    }
-   kernel->synchConsoleOut->PutString(str, idx);
-   //printf(str);
+   //kernel->synchConsoleOut->PutString(str, idx);
+   printf(str);
    return 1;
 }
 

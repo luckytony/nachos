@@ -129,5 +129,6 @@ SynchConsoleOutput::PutString(char* str, int len)
 void
 SynchConsoleOutput::CallBack()
 {
+    cout << "CallBack!!!\n";
     waitFor->V();
 }
