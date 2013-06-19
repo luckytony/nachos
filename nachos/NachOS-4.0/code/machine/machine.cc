@@ -61,6 +61,11 @@ Machine::Machine(bool debug)
     mainMemory = new char[MemorySize];
     for (i = 0; i < MemorySize; i++)
       	mainMemory[i] = 0;
+    swapSpace = new char[MemorySize];
+    for (i = 0; i < MemorySize; i++)
+        swapSpace[i] = 0;    
+    mainMemoryIdx = 0;
+
 #ifdef USE_TLB
     tlb = new TranslationEntry[TLBSize];
     for (i = 0; i < TLBSize; i++)
@@ -221,5 +226,25 @@ Machine::WriteRegister(int num, int value)
 {
     ASSERT((num >= 0) && (num < NumTotalRegs));
     registers[num] = value;
+}
+
+//----------------------------------------------------------------------
+// Machine::SwapInOnePage()
+//     Change the physical page address of the found page from the 
+//     physical address of the swap space into the physical address of 
+//     the main memory.
+//----------------------------------------------------------------------
+void
+Machine::SwapInOnePage(int vpn)
+{
+   TranslationEntry *entry;
+   entry = &pageTable[vpn];
+   int swapPage = entry->physicalPage;
+   memcpy(&mainMemory[mainMemoryIdx * PageSize], 
+          &swapSpace[swapPage * PageSize], PageSize * sizeof(char));
+   //cout << "Map " << swapPage << " to main memory " << mainMemoryIdx << "\n";
+   entry->physicalPage = mainMemoryIdx;
+   entry->valid = TRUE;
+   mainMemoryIdx++; 
 }
 

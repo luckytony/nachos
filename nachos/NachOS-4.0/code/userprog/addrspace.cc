@@ -148,28 +148,27 @@ AddrSpace::Load(char *fileName)
     pageTable = new TranslationEntry[numPages];
     for (int i = 0; i < numPages; i++) {
 	pageTable[i].virtualPage = i;
-	pageTable[i].physicalPage = phyMemHead+i;
-	pageTable[i].valid = TRUE;
+	pageTable[i].physicalPage = phyMemHead+i; // in swap Space 
+	pageTable[i].valid = FALSE;
 	pageTable[i].use = FALSE;
 	pageTable[i].dirty = FALSE;
 	pageTable[i].readOnly = FALSE;  
     }
     phyMemTail = phyMemHead + numPages;
 
-// then, copy in the code and data segments into memory
-// Note: this code assumes that virtual address = physical address
+// then, copy in the code and data segments into swap space
     if (noffH.code.size > 0) {
         DEBUG(dbgAddr, "Initializing code segment.");
 	DEBUG(dbgAddr, noffH.code.virtualAddr << ", " << noffH.code.size);
         executable->ReadAt(
-		&(kernel->machine->mainMemory[noffH.code.virtualAddr+phyMemHead*PageSize]), 
+		&(kernel->machine->swapSpace[noffH.code.virtualAddr+phyMemHead*PageSize]), 
 			noffH.code.size, noffH.code.inFileAddr);
     }
     if (noffH.initData.size > 0) {
         DEBUG(dbgAddr, "Initializing data segment.");
 	DEBUG(dbgAddr, noffH.initData.virtualAddr << ", " << noffH.initData.size);
         executable->ReadAt(
-		&(kernel->machine->mainMemory[noffH.initData.virtualAddr+phyMemHead*PageSize]),
+		&(kernel->machine->swapSpace[noffH.initData.virtualAddr+phyMemHead*PageSize]),
 			noffH.initData.size, noffH.initData.inFileAddr);
     }
 
@@ -178,7 +177,7 @@ AddrSpace::Load(char *fileName)
         DEBUG(dbgAddr, "Initializing read only data segment.");
 	DEBUG(dbgAddr, noffH.readonlyData.virtualAddr << ", " << noffH.readonlyData.size);
         executable->ReadAt(
-		&(kernel->machine->mainMemory[noffH.readonlyData.virtualAddr+phyMemHead*PageSize]),
+		&(kernel->machine->swapSpace[noffH.readonlyData.virtualAddr+phyMemHead*PageSize]),
 			noffH.readonlyData.size, noffH.readonlyData.inFileAddr);
     }
 #endif

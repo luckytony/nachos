@@ -56,6 +56,15 @@ ExceptionHandler(ExceptionType which)
     DEBUG(dbgSys, "Received Exception " << which << " type: " << type << "\n");
 
     switch (which) {
+    case PageFaultException:
+      DEBUG(dbgSys, "Receive Page Fault exception\n");
+
+      SysPageFaultException();
+
+      return;
+
+      break;
+
     case SyscallException:
       int result, op1, op2;
 

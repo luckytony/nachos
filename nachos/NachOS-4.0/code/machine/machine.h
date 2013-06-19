@@ -132,11 +132,16 @@ class Machine {
 // Thus the TLB pointer should be considered as *read-only*, although 
 // the contents of the TLB are free to be modified by the kernel software.
 
+    char* swapSpace;
+    int mainMemoryIdx;
+
     TranslationEntry *tlb;		// this pointer should be considered 
 					// "read-only" to Nachos kernel code
 
     TranslationEntry *pageTable;
     unsigned int pageTableSize;
+
+    void SwapInOnePage(int addr);
 
     bool ReadMem(int addr, int size, int* value);
     bool WriteMem(int addr, int size, int value);

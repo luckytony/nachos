@@ -28,6 +28,16 @@ int SysAdd(int op1, int op2)
 }
 
 //----------------------------------------------------------------------
+// SysPageFaultException()
+//----------------------------------------------------------------------
+void SysPageFaultException()
+{
+    int addr = kernel->machine->ReadRegister(BadVAddrReg);
+    kernel->machine->SwapInOnePage(addr / PageSize);
+    kernel->stats->numPageFaults++;
+}
+
+//----------------------------------------------------------------------
 // myExit(int status)
 //     call when the user program terminated
 //----------------------------------------------------------------------
